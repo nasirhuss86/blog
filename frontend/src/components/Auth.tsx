@@ -1,14 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, ChangeEvent } from "react";
 import { SignupInput } from "@nasirhuss86/meddium-common";
+import { BACKEND_URL} from "../config";
+import axios from "axios";
 
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
+  const navigate = useNavigate();
   const [postInputs, setPostInputs] = useState<SignupInput>({
     name: "",
     username: "",
     password: "",
     email: "",
   });
+
+  async function sendrequest(){
+  
+    try{
+      const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type === "signup"?"signup": "signin"}`, postInputs);
+      const jwt = response.data;
+      localStorage.setItem("token", jwt);
+      navigate("/blog");
+
+    }catch(e){
+      //alert the user here the request fails
+      alert("Error while signing up ")
+    }
+  }
 
   return (
     <div className="h-screen flex justify-center items-center">
@@ -35,6 +52,17 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
               });
             }}
           />:null}
+         {type === "signup" ? <LabelledInput
+            label="email"
+            placeholder="nasirhuss86@gmail.com"
+            onChange={(e) => {
+              setPostInputs({
+                ...postInputs,
+                email: e.target.value,
+              });
+            }}
+          />:null}
+
           <LabelledInput
             label="Username"
             placeholder="nasir@gmail.com"
@@ -57,6 +85,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
             }}
           />
           <button
+            onClick={sendrequest}
             type="button"
             className="mt-8 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
           >
