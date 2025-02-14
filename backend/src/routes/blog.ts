@@ -64,21 +64,30 @@ blogRouter.post("/", async (c) => {
   }
 });
 
+
+
 //get all blogs
 blogRouter.get("/bulk", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
-  try {
-    const blogs = await prisma.blog.findMany(); 
-    return c.json(blogs); 
-  } catch (error) {
-    console.error(error);
-    c.status(500);
-    return c.json({ message: "Failed to fetch blogs" });
-  }
-});
+  
+    const blogs = await prisma.blog.findMany({
+      select: {
+        content: true,
+        title:true,
+        id:true,
+        author:{
+          select:{
+            name:true
+          }
+        }
+      }
+    });
+
+    return c.json({blogs}); 
+  })
 
 //get blog by id
 blogRouter.get("/:id", async (c) => {
