@@ -1,42 +1,44 @@
-import {Appbar} from "../components/Appbar"
-import { BlogCard } from "../components/Blogcard"
-import{useBlogs} from "../hooks"
+import { Appbar } from "../components/Appbar";
+import { BlogCard } from "../components/Blogcard";
+import { useBlogs } from "../hooks";
+import { BlogSkeleton } from "../components/BlogSkeleton";
 
 export const Blogs = () => {
-    const { loading, blogs } = useBlogs();
+  const { loading, blogs } = useBlogs();
 
-if (loading) {
+  if (loading) {
+    return (
+      <div>
+        <Appbar />
+        <div className="flex justify-center">
+          <div>
+            <BlogSkeleton />
+            <BlogSkeleton />
+            <BlogSkeleton />
+            <BlogSkeleton />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-100">
-      <div className="flex flex-col items-center">
-        <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
-        <p className="mt-4 text-xl font-semibold text-gray-600 animate-pulse">
-          Loading...
-        </p>
+    <div>
+      <Appbar />
+      <div className="flex justify-center">
+        <div className="max-w-xl">
+          {blogs.map((blog) => (
+            <BlogCard
+              key={blog.id}
+              id={blog.id}
+              authorName={blog.author.name || "Anonymous"}
+              title={blog.title}
+              content={blog.content}
+              publishedDate={"2nd Feb 2024"}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
-}
-
-    return(
-        <div>
-            <Appbar/>
-         <div className="flex justify-center ">         
-           <div className="max-w-xl ">
-          {blogs.map( blog=> <BlogCard 
-           id={blog.id}
-           authorName={blog.author.name || "Anonymous"}
-           title={blog.title}
-           content={blog.content}
-           publishedDate={"2nd feb 2024"}
-           />)}
-
-           </div>
-           
-       </div>
-
-        </div>
-       
-        
-    )
-}
+};

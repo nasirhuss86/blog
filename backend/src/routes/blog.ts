@@ -88,7 +88,6 @@ blogRouter.get("/bulk", async (c) => {
 
     return c.json({blogs}); 
   })
-
 //get blog by id
 blogRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
@@ -101,6 +100,16 @@ blogRouter.get("/:id", async (c) => {
       where: {
         id: id,
       },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      }
     });
 
     if (!blog) {
@@ -108,7 +117,7 @@ blogRouter.get("/:id", async (c) => {
       return c.json({ message: "Blog not found" });
     }
 
-    return c.json(blog);
+    return c.json({ blog }); // Wrap the response in 'blog' key
   } catch (error) {
     console.error(error);
     c.status(500);
