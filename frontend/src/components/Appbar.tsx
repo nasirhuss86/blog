@@ -1,10 +1,9 @@
 import { Avatar } from "./Blogcard";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Plus, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 export const Appbar = () => {
-    const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const toggleDropdown = () => {
